@@ -1,5 +1,5 @@
 demo_job_1:
     tags:
-        -ci
+        - ci
     script:
-        -echo Integrated successfully
+        - echo Integrated successfully
