@@ -19,7 +19,7 @@ var gulp        = require('gulp'),
     twig        = require('gulp-twig');
 
 
-gulp.task('lib-scss', function() {
+gulp.task('lib-scss', gulp.series(function() {
     var onError = function(err) {
       notify.onError({
           title:    "Gulp",
@@ -42,9 +42,9 @@ gulp.task('lib-scss', function() {
     .pipe(gulp.dest('source/css'))
     .pipe(gulp.dest('site/css'))
     .pipe(reload({stream:true}));
-});
+}));
 
-gulp.task('site-scss', function() {
+gulp.task('site-scss', gulp.series(function() {
     var onError = function(err) {
       notify.onError({
           title:    "Gulp",
@@ -66,49 +66,49 @@ gulp.task('site-scss', function() {
     .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest('site/css'))
     .pipe(reload({stream:true}));
-});
+}));
 
-gulp.task('browser-sync', function() {
+gulp.task('browser-sync', gulp.series(function() {
     browserSync({
         server: {
             baseDir: "site"
         }
     });
-});
+}));
 
-gulp.task('deploy', function () {
+gulp.task('deploy', gulp.series(function () {
     return gulp.src('site/**/*')
         .pipe(deploy());
-});
+}));
 
-gulp.task('sass-lint', function () {
+gulp.task('sass-lint', gulp.series(function () {
   gulp.src('scss/**/*.scss')
     .pipe(sassLint())
     .pipe(sassLint.format())
     .pipe(sassLint.failOnError());
-});
+}));
 
-gulp.task('twig', function () {
+gulp.task('twig', gulp.series(function () {
   gulp.src(['site/**/*.twig', "!site/twig/template.twig"], {base: './'})
     .pipe(twig({
       data: require('./site/filters.json')
     }))
     .pipe(gulp.dest('./'));
-});
+}));
 
 
-gulp.task('watch', function() {
+gulp.task('watch', gulp.series(function() {
   gulp.watch('source/scss/**/*.scss', ['lib-scss', 'site-scss', 'sass-lint']);
   gulp.watch('site/scss/**/*.scss', ['site-scss', 'sass-lint']);
   gulp.watch('source/scss/**/*.html', ['minify-html']);
   gulp.watch('site/**/*.twig', ['twig']);
-});
+}));
 
 
-gulp.task('jshint', function() {
+gulp.task('jshint', gulp.series(function() {
   gulp.src('js/*.js')
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
-});
+}));
 
-gulp.task('default', ['browser-sync', 'twig', 'lib-scss', 'site-scss', 'watch']);
+gulp.task('default', gulp.series(['browser-sync', 'twig', 'lib-scss', 'site-scss', 'watch']));

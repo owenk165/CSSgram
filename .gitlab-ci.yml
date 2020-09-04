@@ -1,5 +1,5 @@
 demo_job_1:
-    tags:
-        - ci
-    script:
-        - echo Integrated successfully
+     tags:
+       - ci
+     script:
+       - echo Integrate successfully
